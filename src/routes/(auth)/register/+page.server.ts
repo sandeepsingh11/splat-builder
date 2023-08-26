@@ -1,7 +1,7 @@
 import { fail, redirect } from '@sveltejs/kit'
+import bcrypt from 'bcrypt'
 import type { Action, Actions, PageServerLoad } from "./$types"
-import { db } from '$lib/server/database';
-
+import { createUser } from '$lib/server/database';
 
 export const load: PageServerLoad = async () => {
 }
@@ -24,15 +24,12 @@ const register: Action = async ({ request }) => {
     password !== passwordConf
   ) return fail(400, { invalid: true });
 
-  await db.user.create({
-    data: {
-      username: username,
-      email: email,
-      password: password,
-      token: crypto.randomUUID()
-    }
-  });
-
+  createUser(
+    username, 
+    email, 
+    await bcrypt.hash(password, 10), 
+    crypto.randomUUID()
+  );
   
   throw redirect(303, '/login')
 }
