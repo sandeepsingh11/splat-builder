@@ -1,7 +1,7 @@
 import type { Actions, PageServerLoad } from "./$types";
 import _weapons from "$lib/Leanny/latest/weapons.json";
 import _translations from "$lib/Leanny/translations.json";
-import { db } from "$lib/server/database";
+import { createLoadout, getUserGears } from "$lib/server/database";
 import { fail, redirect } from "@sveltejs/kit";
 
 type userGear = {
@@ -47,15 +47,12 @@ export const load: PageServerLoad = async ({ locals }) => {
     const shoesLocalization: {[key: string]: string} = localization.GearName_Shoes;
     const skillLocalization: {[key: string]: string} = localization.GearPowerName;
 
-    const userGearsDb = await db.gear.findMany({
-        where: {userId: locals.id},
-        orderBy: {id: 'desc'}
-    });
+    const userGearsDb = await getUserGears(locals.id);
     let userGears: userGear[] = []; // modified userGearsDb
     let headGears: searchSelectObj[] = [];
     let clothesGears: searchSelectObj[] = [];
     let shoesGears: searchSelectObj[] = [];
-    
+
     userGearsDb.forEach(gear => {
         if (gear.gear.includes('Hed_')) {
             userGears.push({
@@ -245,49 +242,32 @@ export const actions: Actions = {
             return fail(400, { invalid: true });
         }
 
-        const loadout = await db.loadout.create({
-            data: {
-                userId: locals.id,
-                title,
-                description: desc,
-                rm,
-                cb,
-                sz,
-                tc,
-                weapon
-            }
-        });
+        await createLoadout(
+            locals.id,
+            title,
+            desc,
+            rm,
+            cb,
+            sz,
+            tc,
+            hGear as number | null,
+            cGear as number | null,
+            sGear as number | null,
+            weapon
+        );
 
-        // associate gears to loadout in pivot table
-        if (hGear) {
-            await db.gearsOnLoadouts.create({
-                data: {
-                    loadoutId: loadout.id,
-                    gearId: parseInt(hGear as string),
-                    gearType: 'H'
-                }
-            })
-        }
-
-        if (cGear) {
-            await db.gearsOnLoadouts.create({
-                data: {
-                    loadoutId: loadout.id,
-                    gearId: parseInt(cGear as string),
-                    gearType: 'C'
-                }
-            })
-        }
-
-        if (sGear) {
-            await db.gearsOnLoadouts.create({
-                data: {
-                    loadoutId: loadout.id,
-                    gearId: parseInt(sGear as string),
-                    gearType: 'S'
-                }
-            })
-        }
+        console.log(locals.id,
+            title,
+            desc,
+            rm,
+            cb,
+            sz,
+            tc,
+            hGear as number | null,
+            cGear as number | null,
+            sGear as number | null,
+            weapon);
+        
         
         // redirect the user
         throw redirect(302, '/loadouts')

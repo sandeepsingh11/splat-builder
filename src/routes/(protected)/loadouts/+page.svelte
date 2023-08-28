@@ -86,7 +86,7 @@
                     {#each loadout.gears as gear}
                         <div class="p-4">
                             <img 
-                                src="/gears/{(gear) ? gear.gear : 'Dummy'}.png" 
+                                src="/gears/{(gear.gear) ?? 'Dummy'}.png" 
                                 alt="" 
                                 class="gear-img mx-auto"
                                 style="width: 128px; height: 128px"
@@ -94,7 +94,7 @@
 
                             <div class="mx-auto p-2">
                                 <img 
-                                    src="/skills/{gear ? gear.skill1 : 'Unknown'}.png" 
+                                    src="/skills/{(gear.skill1) ?? 'Unknown'}.png" 
                                     alt="" 
                                     width="64px" 
                                     height="64px" 
@@ -102,21 +102,21 @@
                                 >
                                 <div class="flex justify-evenly">
                                     <img 
-                                        src="/skills/{gear ? gear.skill2 : 'Unknown'}.png" 
+                                        src="/skills/{(gear.skill2) ?? 'Unknown'}.png" 
                                         alt="" 
                                         width="50px"
                                         height="50px"
                                         class="mx-auto"
                                     >
                                     <img 
-                                        src="/skills/{gear ? gear.skill3 : 'Unknown'}.png" 
+                                        src="/skills/{(gear.skill3) ?? 'Unknown'}.png" 
                                         alt="" 
                                         width="50px"
                                         height="50px"
                                         class="mx-auto"
                                     >
                                     <img 
-                                        src="/skills/{gear ? gear.skill4 : 'Unknown'}.png" 
+                                        src="/skills/{(gear.skill4) ?? 'Unknown'}.png" 
                                         alt="" 
                                         width="50px"
                                         height="50px"

@@ -1,4 +1,4 @@
-import { db } from "$lib/server/database";
+import { getUserLoadouts } from "$lib/server/database";
 import type { PageServerLoad } from "./$types";
 
 import _translations from "$lib/Leanny/translations.json";
@@ -21,12 +21,12 @@ interface loadoutObj {
     createdAt: Date,
     updatedAt: Date,
     gears: {
-        skill1: string,
-        skill2: string,
-        skill3: string,
-        skill4: string,
-        gear: string
-    }[] | null[]
+        skill1: string | null,
+        skill2: string | null,
+        skill3: string | null,
+        skill4: string | null,
+        gear: string | null
+    }[]
 };
 
 export const load: PageServerLoad = async ({locals}) => {
@@ -37,71 +37,49 @@ export const load: PageServerLoad = async ({locals}) => {
     const weapons = Object.entries(_weapons);
     const weaponNames = Object.keys(_weapons);
 
-
-    // get user's loadouts, join gears
-    const loadoutsWithGears = await db.loadout.findMany({
-        where: {
-            userId: locals.id
-        },
-        include: {
-            gears: {
-                select: {
-                    gear: {
-                        select: {
-                            skill1: true,
-                            skill2: true,
-                            skill3: true,
-                            skill4: true,
-                            gear: true
-                        }
-                    },
-                    gearType: true
-                },
-            }
-        },
-        orderBy: {id: 'desc'}
-    })
+    const loadoutsWithGears = await getUserLoadouts(locals.id);
 
     // map out the loadout data
     let loadouts: loadoutObj[] = [];
     loadoutsWithGears.forEach(loadout => {
-        let gears: {}[] | null[] = [null, null, null];
-
-        // get loadout's gear data to map
-        loadout.gears.forEach(gear => {
-            const gearObj = {
-                skill1: gear.gear.skill1,
-                skill2: gear.gear.skill2,
-                skill3: gear.gear.skill3,
-                skill4: gear.gear.skill4,
-                gear: gear.gear.gear
-            };
-
-            if (gear.gearType === 'H') {
-                gears.splice(0, 1, gearObj);
-            }
-            else if (gear.gearType === 'C') {
-                gears.splice(1, 1, gearObj);
-            }
-            else if (gear.gearType === 'S') {
-                gears.splice(2, 1, gearObj);
-            }
-        });
+        const gears = [
+            {
+                skill1: loadout.h_skill1,
+                skill2: loadout.h_skill2,
+                skill3: loadout.h_skill3,
+                skill4: loadout.h_skill4,
+                gear: loadout.h_gear
+            },
+            {
+                skill1: loadout.c_skill1,
+                skill2: loadout.c_skill2,
+                skill3: loadout.c_skill3,
+                skill4: loadout.c_skill4,
+                gear: loadout.c_gear
+            },
+            {
+                skill1: loadout.s_skill1,
+                skill2: loadout.s_skill2,
+                skill3: loadout.s_skill3,
+                skill4: loadout.s_skill4,
+                gear: loadout.s_gear
+            },
+        ];        
         
         // get loadout's weapon data to map
         let weaponObj = {
-            weaponName: loadout.weapon,
+            weaponName: loadout.l_weapon,
             weaponLocalName: '',
             subName: '',
             subLocalName: '',
             specialName: '',
             specialLocalName: '',
         };
-        const weaponIndex = weaponNames.findIndex(weaponName => loadout.weapon === weaponName);
+        const weaponIndex = weaponNames.findIndex(weaponName => loadout.l_weapon === weaponName);
         if (weaponIndex !== -1) {
             weaponObj = {
-                weaponName: loadout.weapon,
-                weaponLocalName: weaponLocal[loadout.weapon],
+                weaponName: loadout.l_weapon,
+                weaponLocalName: weaponLocal[loadout.l_weapon],
                 subName: weapons[weaponIndex][1].Sub,
                 subLocalName: subLocal[weapons[weaponIndex][1].Sub],
                 specialName: weapons[weaponIndex][1].Special,
@@ -111,16 +89,16 @@ export const load: PageServerLoad = async ({locals}) => {
 
         // map loadout data
         loadouts.push({
-            id: loadout.id,
-            title: loadout.title,
-            description: loadout.description,
-            rm: loadout.rm,
-            cb: loadout.cb,
-            sz: loadout.sz,
-            tc: loadout.tc,
+            id: loadout.l_id,
+            title: loadout.l_title,
+            description: loadout.l_description,
+            rm: loadout.l_rm,
+            cb: loadout.l_cb,
+            sz: loadout.l_sz,
+            tc: loadout.l_tc,
             ...weaponObj,
-            createdAt: loadout.createdAt,
-            updatedAt: loadout.updatedAt,
+            createdAt: loadout.l_created_at,
+            updatedAt: loadout.l_updated_at,
             gears: gears
         });
     });
