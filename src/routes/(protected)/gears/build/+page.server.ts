@@ -3,7 +3,7 @@ import Gears from "$lib/Leanny/latest/gears.json";
 import Weapons from "$lib/Leanny/latest/weapons.json";
 import Translations from "$lib/Leanny/translations.json";
 import { fail, redirect } from '@sveltejs/kit';
-import { createGear } from '$lib/server/database';
+import { createUserGear } from '$lib/server/database';
 
 export const load = (async () => {
     const translations = Translations['USen'];
@@ -162,7 +162,7 @@ export const actions: Actions = {
             return fail(400, { invalid: true });
         }
 
-        await createGear(
+        await createUserGear(
             locals.id,
             title,
             desc,

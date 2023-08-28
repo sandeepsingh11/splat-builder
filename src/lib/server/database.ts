@@ -47,7 +47,7 @@ export async function updateToken(userId: number, token: string) {
 
 export async function getUserGears(userId: number) {
     const [row] = await pool.execute(
-        'select * from gears where user_id = ? order by id desc',
+        'select * from user_gears where user_id = ? order by id desc',
         [userId],
     );
 
@@ -55,9 +55,9 @@ export async function getUserGears(userId: number) {
     return JSON.parse(JSON.stringify(row));
 }
 
-export async function createGear(userId: number, title: string, description: string, skill1: string, skill2: string, skill3: string, skill4: string, gear: string, weapon: string) {
+export async function createUserGear(userId: number, title: string, description: string, skill1: string, skill2: string, skill3: string, skill4: string, gear: string, weapon: string) {
     const [row] = await pool.execute(
-        `insert into gears (user_id, title, description, skill1, skill2, skill3, skill4, gear, weapon)
+        `insert into user_gears (user_id, title, description, skill1, skill2, skill3, skill4, gear, weapon)
         values (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
         [userId, title, description, skill1, skill2, skill3, skill4, gear, weapon]
     );
@@ -82,9 +82,9 @@ export async function getUserLoadouts(userId: number) {
         c.skill1, c.skill2, c.skill3, c.skill4, c.gear,
         s.skill1, s.skill2, s.skill3, s.skill4, s.gear
         from loadouts l
-        left join gears h on h.id = l.h_gear_id
-        left join gears c on c.id = l.c_gear_id
-        left join gears s on s.id = l.s_gear_id
+        left join user_gears h on h.id = l.h_gear_id
+        left join user_gears c on c.id = l.c_gear_id
+        left join user_gears s on s.id = l.s_gear_id
         where l.user_id = ? 
         order by l.id desc`,
         nestTables: '_'

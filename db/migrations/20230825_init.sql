@@ -11,9 +11,9 @@ create table users(
     primary key(id)
 );
 
-drop table if exists gears;
+drop table if exists user_gears;
 
-create table gears(
+create table user_gears(
     id int auto_increment,
     user_id int not null,
     title varchar(255),
