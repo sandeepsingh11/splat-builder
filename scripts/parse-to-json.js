@@ -18,6 +18,8 @@ const weaponOutputPath = `${__dirname}/output/weapons.json`;
 const gearOutputPath = `${__dirname}/output/gears.json`;
 const brandOutputPath = `${__dirname}/output/brands.json`;
 
+const translation_en = `${dataDir}/USen.json`;
+
 let weapons = [];
 let gears = [];
 let brands = [];
@@ -191,29 +193,47 @@ function parseGears() {
     // parse through gears
     const gearTypes = ['Head', 'Clothes', 'Shoes'];
 
-    gearTypes.forEach(gearType => {
-        try {
-            let gearTypeData = readFileSync(`${dataDir}/GearInfo${gearType}.json`);
-            gearTypeData = JSON.parse(gearTypeData.toString());
-            gearTypeData.forEach(gear => {
-                let gearObj = {};
+    try {
+        // get gear translations
+        let enData = readFileSync(translation_en);
+        enData = JSON.parse(enData.toString());
+        const headGearEn = enData["CommonMsg/Gear/GearName_Head"];
+        const clothesGearEn = enData["CommonMsg/Gear/GearName_Clothes"];
+        const shoesGearEn = enData["CommonMsg/Gear/GearName_Shoes"];
 
-                gearObj["name"] = gear["__RowId"];
-                gearObj["skill_id"] = parseInt(skillsMapping.indexOf(gear["Skill"])) + 1;
-                gearObj["brand_id"] = parseInt(brandsMapping.indexOf(gear["Brand"])) + 1;;
-                gearObj["gear_type"] = gearType[0];
-                gearObj["price"] = gear["Price"];
-                gearObj["season"] = gear["Season"];
-                gearObj["rarity"] = gear["Rarity"];
-                gearObj["how_to_get"] = gear["HowToGet"];
+        // go through each gear type
+        gearTypes.forEach(gearType => {
+            let gearEn;
+            if (gearType === "Head") gearEn = headGearEn;
+            else if (gearType === "Clothes") gearEn = clothesGearEn;
+            else gearEn = shoesGearEn;
 
-                gears.push(gearObj);
-            });
-        }
-        catch (error) {
-            console.error(`Got an error trying to read ${dataDir}/GearInfo${gearType}.json: ${error.message}\n`);
-        }
-    });
+            try {
+                let gearTypeData = readFileSync(`${dataDir}/GearInfo${gearType}.json`);
+                gearTypeData = JSON.parse(gearTypeData.toString());
+                gearTypeData.forEach(gear => {
+                    let gearObj = {};
+    
+                    gearObj["name"] = gear["__RowId"];
+                    gearObj["name_en"] = gearEn[gear["__RowId"].slice(4)];
+                    gearObj["skill_id"] = parseInt(skillsMapping.indexOf(gear["Skill"])) + 1;
+                    gearObj["brand_id"] = parseInt(brandsMapping.indexOf(gear["Brand"])) + 1;;
+                    gearObj["gear_type"] = gearType[0];
+                    gearObj["price"] = gear["Price"];
+                    gearObj["season"] = gear["Season"];
+                    gearObj["rarity"] = gear["Rarity"];
+                    gearObj["how_to_get"] = gear["HowToGet"];
+
+                    gears.push(gearObj);
+                });
+            }
+            catch (error) {
+                console.error(`Got an error trying to read ${dataDir}/GearInfo${gearType}.json: ${error.message}\n`);
+            }
+        });
+    } catch (error) {
+        console.error(`Error when reading ${translation_en}: ${error}`);
+    }
 
     writeFile(gearOutputPath, gears);
 }
