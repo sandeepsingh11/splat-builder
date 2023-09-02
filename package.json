@@ -8,7 +8,7 @@
     "preview": "vite preview",
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
-    "params": "node scripts/process-params.js"
+    "params": "node scripts/parse-to-json.js"
   },
   "devDependencies": {
     "@sveltejs/adapter-vercel": "^3.0.3",

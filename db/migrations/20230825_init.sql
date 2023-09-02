@@ -48,3 +48,81 @@ create table loadouts(
     updated_at timestamp default current_timestamp,
     primary key(id)
 );
+
+
+drop table if exists skills;
+
+create table skills(
+    id int auto_increment,
+    name varchar(255) not null,
+    is_main tinyint default 0,
+    created_at timestamp default current_timestamp,
+    updated_at timestamp default current_timestamp,
+    primary key(id)
+);
+
+drop table if exists subs;
+
+create table subs(
+    id int auto_increment,
+    name varchar(255) not null,
+    created_at timestamp default current_timestamp,
+    updated_at timestamp default current_timestamp,
+    primary key(id)
+);
+
+drop table if exists specials;
+
+create table specials(
+    id int auto_increment,
+    name varchar(255) not null,
+    created_at timestamp default current_timestamp,
+    updated_at timestamp default current_timestamp,
+    primary key(id)
+);
+
+drop table if exists weapons;
+
+create table weapons(
+    id int auto_increment,
+    name varchar(255) not null,
+    weapon_class varchar(255) not null,
+    sub_id int not null,
+    special_id int not null,
+    special_point int not null,
+    season int not null,
+    price int not null,
+    shop_unlock_rank int not null,
+    created_at timestamp default current_timestamp,
+    updated_at timestamp default current_timestamp,
+    primary key(id)
+);
+
+drop table if exists gears;
+
+create table gears(
+    id int auto_increment,
+    name varchar(255) not null,
+    skill_id int not null,
+    brand_id int not null,
+    gear_type varchar(1),
+    price int,
+    season varchar(255),
+    rarity varchar(255),
+    how_to_get varchar(255),
+    created_at timestamp default current_timestamp,
+    updated_at timestamp default current_timestamp,
+    primary key(id)
+);
+
+drop table if exists brands;
+
+create table brands(
+    id int auto_increment,
+    name varchar(255) not null,
+    primary_skill_id int,
+    secondary_skill_id int,
+    created_at timestamp default current_timestamp,
+    updated_at timestamp default current_timestamp,
+    primary key(id)
+);
