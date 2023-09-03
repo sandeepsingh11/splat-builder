@@ -1,5 +1,5 @@
 import type { Actions, PageServerLoad } from './$types';
-import Gears from "$lib/Leanny/latest/gears.json";
+import { getGearByName, getSkillByName, getWeaponByName } from "$lib/server/database";
 import Weapons from "$lib/Leanny/latest/weapons.json";
 import Translations from "$lib/Leanny/translations.json";
 import { fail, redirect } from '@sveltejs/kit';
@@ -162,16 +162,23 @@ export const actions: Actions = {
             return fail(400, { invalid: true });
         }
 
+        const skill1Row = await getSkillByName(skill1);
+        const skill2Row = await getSkillByName(skill2);
+        const skill3Row = await getSkillByName(skill3);
+        const skill4Row = await getSkillByName(skill4);
+        const gearRow = await getGearByName(gear);
+        const weaponRow = await getWeaponByName(weapon);
+
         await createUserGear(
             locals.id,
             title,
             desc,
-            skill1,
-            skill2,
-            skill3,
-            skill4,
-            gear,
-            weapon
+            skill1Row["id"],
+            skill2Row["id"],
+            skill3Row["id"],
+            skill4Row["id"],
+            gearRow["id"],
+            weaponRow["id"]
         );
         
         // redirect the user

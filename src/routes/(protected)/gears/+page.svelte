@@ -12,14 +12,14 @@
             <div class="bg-gray-700 rounded-md shadow-lg transform hover:-translate-y-2 transition-transform">
                 <!-- title -->
                 <div class="p-4 bg-purple-400 rounded-tl-md rounded-tr-md text-center text-lg font-semibold">
-                    <h3>{ (gear.title) ? gear.title : '(no title)' }</h3>
+                    <h3>{ (gear.ug_title) ? gear.ug_title : '(no title)' }</h3>
                 </div>
     
                 <!-- gear -->
                 <div class="p-4">
                     <img 
-                        src="/gears/{ gear.gear }.png" 
-                        alt="{ gear.gear }" 
+                        src="/gears/{ gear.g_name }.png" 
+                        alt="{ gear.g_name_en }" 
                         class="gear-img mx-auto"
                     >
                 </div>
@@ -28,8 +28,8 @@
                 <div class="grid grid-cols-4 items-end">
                     <div class="mx-auto p-2">
                         <img 
-                            src="/skills/{ gear.skill1 }.png"
-                            alt="{ gear.skill1 }" 
+                            src="/skills/{ gear.s1_name }.png"
+                            alt="{ gear.s1_name }" 
                             width="64" 
                             height="64" 
                             class="mx-auto"
@@ -37,8 +37,8 @@
                     </div>
                     <div class="mx-auto p-2">
                         <img 
-                            src="/skills/{ gear.skill2 }.png"
-                            alt="{ gear.skill2 }" 
+                            src="/skills/{ gear.s2_name }.png"
+                            alt="{ gear.s2_name }" 
                             width="50" 
                             height="50" 
                             class="mx-auto"
@@ -46,8 +46,8 @@
                     </div>
                     <div class="mx-auto p-2">
                         <img 
-                            src="/skills/{ gear.skill3 }.png"
-                            alt="{ gear.skill3 }" 
+                            src="/skills/{ gear.s3_name }.png"
+                            alt="{ gear.s3_name }" 
                             width="50" 
                             height="50" 
                             class="mx-auto"
@@ -55,8 +55,8 @@
                     </div>
                     <div class="mx-auto p-2">
                         <img 
-                            src="/skills/{ gear.skill4 }.png"
-                            alt="{ gear.skill4 }" 
+                            src="/skills/{ gear.s4_name }.png"
+                            alt="{ gear.s4_name }" 
                             width="50" 
                             height="50" 
                             class="mx-auto"
@@ -66,7 +66,7 @@
     
                 <!-- desc -->
                 <div>
-                    <p class="bg-gray-100 p-3">{ (gear.description) ? gear.description : '(no description)' }</p>
+                    <p class="bg-gray-100 p-3">{ (gear.ug_description) ? gear.ug_description : '(no description)' }</p>
                 </div>
 
                 <!-- edit and delete gear buttons -->

@@ -1,7 +1,7 @@
 import type { Actions, PageServerLoad } from "./$types";
 import _weapons from "$lib/Leanny/latest/weapons.json";
 import _translations from "$lib/Leanny/translations.json";
-import { createLoadout, getUserGears } from "$lib/server/database";
+import { createLoadout, getUserGears, getWeaponByName } from "$lib/server/database";
 import { fail, redirect } from "@sveltejs/kit";
 
 type userGear = {
@@ -54,52 +54,32 @@ export const load: PageServerLoad = async ({ locals }) => {
     let shoesGears: searchSelectObj[] = [];
 
     userGearsDb.forEach(gear => {
-        if (gear.gear.includes('Hed_')) {
-            userGears.push({
-                id: gear.id.toString(),
-                name: gear.gear,
-                localizedName: headLocalization[gear.gear],
-                skill1: {name: gear.skill1, localizedName: skillLocalization[gear.skill1]},
-                skill2: {name: gear.skill2, localizedName: skillLocalization[gear.skill2]},
-                skill3: {name: gear.skill3, localizedName: skillLocalization[gear.skill3]},
-                skill4: {name: gear.skill4, localizedName: skillLocalization[gear.skill4]},
-            });
+        userGears.push({
+            id: gear.ug_id,
+            name: gear.g_name,
+            localizedName: gear.g_name_en,
+            skill1: {name: gear.s1_name, localizedName: skillLocalization[gear.skill1]},
+            skill2: {name: gear.s2_name, localizedName: skillLocalization[gear.skill2]},
+            skill3: {name: gear.s3_name, localizedName: skillLocalization[gear.skill3]},
+            skill4: {name: gear.s4_name, localizedName: skillLocalization[gear.skill4]},
+        });
 
+        if (gear.g_name.includes('Hed_')) {
             headGears.push({
-                id: gear.id.toString(),
-                name: (gear.title) ? gear.title : '(no title)'
+                id: gear.ug_id,
+                name: gear.ug_title ?? '(no title)'
             });
         }
-        else if (gear.gear.includes('Clt_')) {
-            userGears.push({
-                id: gear.id.toString(),
-                name: gear.gear,
-                localizedName: clothesLocalization[gear.gear],
-                skill1: {name: gear.skill1, localizedName: skillLocalization[gear.skill1]},
-                skill2: {name: gear.skill2, localizedName: skillLocalization[gear.skill2]},
-                skill3: {name: gear.skill3, localizedName: skillLocalization[gear.skill3]},
-                skill4: {name: gear.skill4, localizedName: skillLocalization[gear.skill4]},
-            });
-
+        else if (gear.g_name.includes('Clt_')) {
             clothesGears.push({
-                id: gear.id.toString(),
-                name: (gear.title) ? gear.title : '(no title)'
+                id: gear.ug_id,
+                name: gear.ug_title ?? '(no title)'
             });
         }
         else {
-            userGears.push({
-                id: gear.id.toString(),
-                name: gear.gear,
-                localizedName: shoesLocalization[gear.gear],
-                skill1: {name: gear.skill1, localizedName: skillLocalization[gear.skill1]},
-                skill2: {name: gear.skill2, localizedName: skillLocalization[gear.skill2]},
-                skill3: {name: gear.skill3, localizedName: skillLocalization[gear.skill3]},
-                skill4: {name: gear.skill4, localizedName: skillLocalization[gear.skill4]},
-            });
-
             shoesGears.push({
-                id: gear.id.toString(),
-                name: (gear.title) ? gear.title : '(no title)'
+                id: gear.ug_id,
+                name: gear.ug_title ?? '(no title)'
             });
         }
     });
@@ -242,6 +222,8 @@ export const actions: Actions = {
             return fail(400, { invalid: true });
         }
 
+        const weaponRow = await getWeaponByName(weapon);
+
         await createLoadout(
             locals.id,
             title,
@@ -253,20 +235,8 @@ export const actions: Actions = {
             hGear as number | null,
             cGear as number | null,
             sGear as number | null,
-            weapon
+            weaponRow["id"]
         );
-
-        console.log(locals.id,
-            title,
-            desc,
-            rm,
-            cb,
-            sz,
-            tc,
-            hGear as number | null,
-            cGear as number | null,
-            sGear as number | null,
-            weapon);
         
         
         // redirect the user

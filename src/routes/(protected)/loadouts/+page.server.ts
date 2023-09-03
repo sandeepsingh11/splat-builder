@@ -44,42 +44,42 @@ export const load: PageServerLoad = async ({locals}) => {
     loadoutsWithGears.forEach(loadout => {
         const gears = [
             {
-                skill1: loadout.h_skill1,
-                skill2: loadout.h_skill2,
-                skill3: loadout.h_skill3,
-                skill4: loadout.h_skill4,
-                gear: loadout.h_gear
+                skill1: loadout.h_s1_name,
+                skill2: loadout.h_s2_name,
+                skill3: loadout.h_s3_name,
+                skill4: loadout.h_s4_name,
+                gear: loadout.h_g_name
             },
             {
-                skill1: loadout.c_skill1,
-                skill2: loadout.c_skill2,
-                skill3: loadout.c_skill3,
-                skill4: loadout.c_skill4,
-                gear: loadout.c_gear
+                skill1: loadout.c_s1_name,
+                skill2: loadout.c_s2_name,
+                skill3: loadout.c_s3_name,
+                skill4: loadout.c_s4_name,
+                gear: loadout.c_g_name
             },
             {
-                skill1: loadout.s_skill1,
-                skill2: loadout.s_skill2,
-                skill3: loadout.s_skill3,
-                skill4: loadout.s_skill4,
-                gear: loadout.s_gear
+                skill1: loadout.s_s1_name,
+                skill2: loadout.s_s2_name,
+                skill3: loadout.s_s3_name,
+                skill4: loadout.s_s4_name,
+                gear: loadout.s_g_name
             },
         ];        
         
         // get loadout's weapon data to map
         let weaponObj = {
-            weaponName: loadout.l_weapon,
+            weaponName: loadout.w_name,
             weaponLocalName: '',
             subName: '',
             subLocalName: '',
             specialName: '',
             specialLocalName: '',
         };
-        const weaponIndex = weaponNames.findIndex(weaponName => loadout.l_weapon === weaponName);
+        const weaponIndex = weaponNames.findIndex(weaponName => loadout.w_name === weaponName);
         if (weaponIndex !== -1) {
             weaponObj = {
-                weaponName: loadout.l_weapon,
-                weaponLocalName: weaponLocal[loadout.l_weapon],
+                weaponName: loadout.w_name,
+                weaponLocalName: weaponLocal[loadout.w_name],
                 subName: weapons[weaponIndex][1].Sub,
                 subLocalName: subLocal[weapons[weaponIndex][1].Sub],
                 specialName: weapons[weaponIndex][1].Special,
